@@ -145,13 +145,66 @@ function orderAlphabetically(moviesArray) {
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(moviesArray) {
-
-    const minutesArray = moviesArray.map(movie => {
-
-
-    })
-
- }
+    const timeConversion = (duration) => {
+      let minutes = 0;
+      const splitDuration = duration.split(' ');
+  
+      splitDuration.forEach(durationPart => {
+        const conversionMin = parseFloat(durationPart);
+  
+        if (!isNaN(conversionMin)) {
+          if (durationPart.includes('h')) {
+            minutes += conversionMin * 60;
+          } else if (durationPart.includes('min')) {
+            minutes += conversionMin;
+          }
+        }
+      });
+  
+      return minutes;
+    }
+  
+    const updatedMovies = moviesArray.map(movie => ({
+      ...movie,
+      duration: timeConversion(movie.duration),
+    }));
+  
+    return updatedMovies;
+  }
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
-function bestYearAvg(moviesArray) { }
+function bestYearAvg(moviesArray) {
+    if (moviesArray.length === 0) {
+      return null;
+    }
+  
+    const yearStats = moviesArray.reduce((acc, movie) => {
+      const year = movie.year;
+      const score = movie.score;
+  
+      if (year && score !== undefined) {
+        acc[year] = acc[year] || { totalScore: 0, movieCount: 0, year: year };
+        acc[year].totalScore += score;
+        acc[year].movieCount++;
+      }
+  
+      return acc;
+    }, {});
+  
+    let bestYear = '';
+    let bestAverageScore = -1;
+  
+    for (const year in yearStats) {
+      const { totalScore, movieCount, year: currentYear } = yearStats[year];
+      const averageScore = totalScore / movieCount;
+  
+      if (averageScore > bestAverageScore || (averageScore === bestAverageScore && currentYear < bestYear)) {
+        bestYear = currentYear;
+        bestAverageScore = averageScore;
+      }
+    }
+  
+    return `The best year was ${bestYear} with an average score of ${bestAverageScore}`;
+  }
+  
+    
